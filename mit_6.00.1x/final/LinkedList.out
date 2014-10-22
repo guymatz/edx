@@ -1,0 +1,323 @@
+Test: 1A
+Adding to the beginning: Adding 'allison' to the list ('gabby')
+Output:
+Test: insert(Frob("gabby"), Frob("allison"))
+*** Walking the linked list forward: ***
+allison
+gabby
+
+Test: 1B
+Adding to the beginning: Adding 'allison' to the list ('gabby')
+Output:
+
+Test: insert(Frob("gabby"), Frob("allison"))
+*** Walking the linked list backward: ***
+gabby
+allison
+
+Test: 2A
+Adding to the end: Adding 'zara' to the list ('gabby')
+Output:
+
+Test: insert(Frob("gabby"), Frob("zara"))
+*** Walking the linked list forward: ***
+gabby
+zara
+
+Test: 2B
+Adding to the end: Adding 'zara' to the list ('gabby')
+Output:
+
+Test: insert(Frob("gabby"), Frob("zara"))
+*** Walking the linked list backward: ***
+zara
+gabby
+
+Test: 3A
+Multiple names. test_list = Frob('abby')
+        
+Your output:
+
+Test: insert(test_list, Frob("xander"))
+
+Test: insert(test_list, Frob("beto"))
+*** Walking the linked list forward: ***
+abby
+xander
+Correct output:
+
+Test: insert(test_list, Frob("xander"))
+
+Test: insert(test_list, Frob("beto"))
+*** Walking the linked list forward: ***
+abby
+beto
+xander
+
+Test: 3B
+Multiple names. test_list = Frob('abby')
+        
+Your output:
+
+Test: insert(test_list, Frob("xander"))
+
+Test: insert(test_list, Frob("beto"))
+*** Walking the linked list backward: ***
+xander
+abby
+Correct output:
+
+Test: insert(test_list, Frob("xander"))
+
+Test: insert(test_list, Frob("beto"))
+*** Walking the linked list backward: ***
+xander
+beto
+abby
+
+Test: 4
+Equal names: Adding 'alvin' to the list ('alvin')
+Output:
+
+Test: insert(Frob("alvin"), Frob("alvin"))
+*** Walking the linked list forward: ***
+alvin
+alvin
+*** Walking the linked list backward: ***
+alvin
+alvin
+
+Test: 5
+Multiple names. test_list = Frob('allison')
+        
+Your output:
+
+Test: insert(test_list, Frob("lyla"))
+
+Test: insert(test_list, Frob("christina"))
+
+Test: insert(test_list, Frob("ben"))
+*** Walking the linked list forward: ***
+allison
+lyla
+*** Walking the linked list backward: ***
+lyla
+allison
+Correct output:
+
+Test: insert(test_list, Frob("lyla"))
+
+Test: insert(test_list, Frob("christina"))
+
+Test: insert(test_list, Frob("ben"))
+*** Walking the linked list forward: ***
+allison
+ben
+christina
+lyla
+*** Walking the linked list backward: ***
+lyla
+christina
+ben
+allison
+
+Test: 6
+Multiple names. test_list = Frob('zsa zsa')
+a = sm.Frob('ashley')
+m = sm.Frob('marcella')
+v = sm.Frob('victor')
+        
+Your output:
+
+Test: insert(test_list, m)
+
+Test: insert(m, a)
+
+Test: insert(a, v)
+*** Walking the linked list forward: ***
+ashley
+marcella
+zsa zsa
+*** Walking the linked list backward: ***
+zsa zsa
+marcella
+ashley
+Correct output:
+
+Test: insert(test_list, m)
+
+Test: insert(m, a)
+
+Test: insert(a, v)
+*** Walking the linked list forward: ***
+ashley
+marcella
+victor
+zsa zsa
+*** Walking the linked list backward: ***
+zsa zsa
+victor
+marcella
+ashley
+
+Test: 7
+Multiple names. test_list = Frob('mark')
+c = Frob('craig')
+        
+Your output:
+
+Test: insert(test_list, Frob("sam"))
+
+Test: insert(test_list, Frob("nick"))
+
+Test: insert(test_list, c)
+
+Test: insert(c, Frob("xanthi"))
+
+Test: insert(test_list, Frob("jayne"))
+
+Test: insert(c, Frob("martha"))
+*** Walking the linked list forward: ***
+craig
+jayne
+mark
+sam
+xanthi
+*** Walking the linked list backward: ***
+xanthi
+sam
+mark
+jayne
+craig
+Correct output:
+
+Test: insert(test_list, Frob("sam"))
+
+Test: insert(test_list, Frob("nick"))
+
+Test: insert(test_list, c)
+
+Test: insert(c, Frob("xanthi"))
+
+Test: insert(test_list, Frob("jayne"))
+
+Test: insert(c, Frob("martha"))
+*** Walking the linked list forward: ***
+craig
+jayne
+mark
+martha
+nick
+sam
+xanthi
+*** Walking the linked list backward: ***
+xanthi
+sam
+nick
+martha
+mark
+jayne
+craig
+
+Test: 8
+Multiple names. test_list = Frob('leonid')
+a = Frob('amara')
+j1 = Frob('jennifer')
+j2 = Frob('jennifer')
+s = Frob('scott')
+        
+Output:
+
+Test: insert(test_list, s)
+
+Test: insert(s, j1)
+
+Test: insert(s, j2)
+
+Test: insert(j1, a)
+*** Walking the linked list forward: ***
+amara
+jennifer
+jennifer
+leonid
+scott
+*** Walking the linked list backward: ***
+scott
+leonid
+jennifer
+jennifer
+amara
+
+Test: 9
+Multiple names. test_list = Frob('eric')
+        
+Your output:
+
+Test: insert(test_list, Frob("eric"))
+
+Test: insert(test_list, Frob("chris"))
+
+Test: insert(test_list, Frob("john"))
+
+Test: insert(test_list, Frob("john"))
+
+Test: insert(test_list, Frob("chris"))
+
+Test: insert(test_list, Frob("eric"))
+
+Test: insert(test_list, Frob("john"))
+
+Test: insert(test_list, Frob("chris"))
+*** Walking the linked list forward: ***
+chris
+chris
+chris
+eric
+eric
+eric
+john
+*** Walking the linked list backward: ***
+john
+eric
+eric
+eric
+chris
+chris
+chris
+Correct output:
+
+Test: insert(test_list, Frob("eric"))
+
+Test: insert(test_list, Frob("chris"))
+
+Test: insert(test_list, Frob("john"))
+
+Test: insert(test_list, Frob("john"))
+
+Test: insert(test_list, Frob("chris"))
+
+Test: insert(test_list, Frob("eric"))
+
+Test: insert(test_list, Frob("john"))
+
+Test: insert(test_list, Frob("chris"))
+*** Walking the linked list forward: ***
+chris
+chris
+chris
+eric
+eric
+eric
+john
+john
+john
+*** Walking the linked list backward: ***
+john
+john
+john
+eric
+eric
+eric
+chris
+chris
+chri
