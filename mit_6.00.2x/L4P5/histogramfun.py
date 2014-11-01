@@ -30,10 +30,11 @@ def plotVowelProportionHistogram(wordList, numBins=15):
     data = []
     for w in wordList:
         vowel_count = len([ x for x in w if x in ['a','e','i','o','u'] ])
-        prop = vowel_count/float(len(word)
+        prop = vowel_count/float(len(w))
+        print prop
         data.append(prop)
     pylab.hist(data, numBins)
-    
+    pylab.show()
 
 if __name__ == '__main__':
     wordList = loadWords()
