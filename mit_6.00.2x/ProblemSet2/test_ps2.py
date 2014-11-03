@@ -2,6 +2,37 @@ import unittest
 import ps2
 from ps2 import Position
 from ps2 import RectangularRoom
+from ps2 import Robot
+
+class TddRobot(unittest.TestCase):
+    def test_bad_init(self):
+        try:
+            r = Robot()
+        except:
+            self.assertRaises(TypeError)
+
+    def test_init(self):
+        room = RectangularRoom(3,4)
+        robot = Robot(room, 5)
+
+    def test_get_robot_position(self):
+        room = RectangularRoom(3,4)
+        robot = Robot(room, 5)
+        pos = Position(1,2)
+        robot.setRobotPosition(pos)
+        self.assertEquals(str(robot.getRobotPosition()),'(1.00, 2.00)')
+
+    def test_get_robot_direction(self):
+        room = RectangularRoom(3,4)
+        robot = Robot(room, 5)
+        robot.setRobotDirection(30)
+        self.assertEquals(robot.getRobotDirection(), 30)
+
+    def test_set_robot_position(self):
+        self.test_get_robot_position()
+
+    def test_set_robot_direction(self):
+        self.test_get_robot_direction()
 
 class TddPosition(unittest.TestCase):
 
@@ -40,7 +71,7 @@ class TddRectangularRoom(unittest.TestCase):
         room = RectangularRoom(3,4)
         pos = Position(3,4)
         pos_in_room  = room.isPositionInRoom(pos)
-        self.assertTrue(pos_in_room)
+        self.assertFalse(pos_in_room)
 
     def test_is_position_in_room_on_origin(self):
         room = RectangularRoom(3,4)
@@ -52,13 +83,13 @@ class TddRectangularRoom(unittest.TestCase):
         room = RectangularRoom(3,4)
         pos = Position(0,4)
         pos_in_room  = room.isPositionInRoom(pos)
-        self.assertTrue(pos_in_room)
+        self.assertFalse(pos_in_room)
 
     def test_is_position_in_room_on_top_edge(self):
         room = RectangularRoom(3,4)
         pos = Position(3,0)
         pos_in_room  = room.isPositionInRoom(pos)
-        self.assertTrue(pos_in_room)
+        self.assertFalse(pos_in_room)
 
     def test_is_position_in_room_outside_of_corner(self):
         room = RectangularRoom(3,4)

@@ -45,6 +45,7 @@ class Position(object):
         Returns: a Position object representing the new position.
         """
         old_x, old_y = self.getX(), self.getY()
+        #print("about to set angle to %s" % angle)
         angle = float(angle)
         # Compute the change in position
         delta_y = speed * math.cos(math.radians(angle))
@@ -101,7 +102,6 @@ class RectangularRoom(object):
         """
         x = int(pos.getX())
         y = int(pos.getY())
-        print("x = %i, y = %i" % (x,y))
         if not self.isTileCleaned(x,y):
             self.clean_tiles.append(Position(x,y))
 
@@ -178,15 +178,20 @@ class Robot(object):
         room:  a RectangularRoom object.
         speed: a float (speed > 0)
         """
-        raise NotImplementedError
-
+        self.room = room
+        self.speed = speed
+        self.direction = random.choice(range(360))
+        self.pos = Position(random.choice(range(room.width)),
+                            random.choice(range(room.height)))
+        self.room.cleanTileAtPosition(self.pos)
+        
     def getRobotPosition(self):
         """
         Return the position of the robot.
 
         returns: a Position object giving the robot's position.
         """
-        raise NotImplementedError
+        return self.pos
     
     def getRobotDirection(self):
         """
@@ -195,7 +200,13 @@ class Robot(object):
         returns: an integer d giving the direction of the robot as an angle in
         degrees, 0 <= d < 360.
         """
-        raise NotImplementedError
+        return self.direction
+
+    def getRobotRoom(self):
+        return self.room
+
+    def getRobotSpeed(self):
+        return self.speed
 
     def setRobotPosition(self, position):
         """
@@ -203,7 +214,7 @@ class Robot(object):
 
         position: a Position object.
         """
-        raise NotImplementedError
+        self.pos = position
 
     def setRobotDirection(self, direction):
         """
@@ -211,7 +222,8 @@ class Robot(object):
 
         direction: integer representing an angle in degrees
         """
-        raise NotImplementedError
+        #print("Setting direction to %i" % direction)
+        self.direction = direction
 
     def updatePositionAndClean(self):
         """
@@ -239,10 +251,27 @@ class StandardRobot(Robot):
         Move the robot to a new position and mark the tile it is on as having
         been cleaned.
         """
-        raise NotImplementedError
+        
+        new_pos = self.getRobotPosition().getNewPosition(
+                            self.getRobotDirection(),
+                            self.getRobotSpeed()
+                      )
+        while not self.getRobotRoom().isPositionInRoom(new_pos):
+            random_angle = random.choice(range(360))
+            #print("random_angle = %i" % random_angle)
+            self.setRobotDirection(random_angle)
+            new_pos = self.getRobotPosition().getNewPosition(
+                            random_angle,
+                            self.getRobotSpeed()
+                      )
+            print("angle = %i, pos = %s" % (random_angle, str(new_pos)))
+        self.setRobotPosition(new_pos)
+        room = self.getRobotRoom()
+        room.cleanTileAtPosition(self.pos)
+        
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-##testRobotMovement(StandardRobot, RectangularRoom)
+testRobotMovement(StandardRobot, RectangularRoom)
 
 
 # === Problem 3
