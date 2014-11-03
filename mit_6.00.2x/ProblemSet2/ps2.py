@@ -158,6 +158,9 @@ class RectangularRoom(object):
         else:
             return True
 
+    def __str__(self):
+        return '%ix%i' % (self.width, self.height)
+
 
 class Robot(object):
     """
@@ -264,14 +267,14 @@ class StandardRobot(Robot):
                             random_angle,
                             self.getRobotSpeed()
                       )
-            print("angle = %i, pos = %s" % (random_angle, str(new_pos)))
+            #print("angle = %i, pos = %s" % (random_angle, str(new_pos)))
         self.setRobotPosition(new_pos)
         room = self.getRobotRoom()
         room.cleanTileAtPosition(self.pos)
         
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-testRobotMovement(StandardRobot, RectangularRoom)
+##testRobotMovement(StandardRobot, RectangularRoom)
 
 
 # === Problem 3
@@ -293,10 +296,44 @@ def runSimulation(num_robots, speed, width, height, min_coverage, num_trials,
     robot_type: class of robot to be instantiated (e.g. StandardRobot or
                 RandomWalkRobot)
     """
-    raise NotImplementedError
+
+    trials = []
+
+    #print("Looking to clean  %f%% of the floor with %i Robots" % (min_coverage*100, num_robots))
+
+    for t in range(num_trials):
+        room = RectangularRoom(width, height)
+
+        robot_list = []
+        for  n in range(num_robots):
+            robot_list.append(robot_type(room, speed))
+            #print("Trial %02i: Robot %s is cleaning room %s at speed %s" %
+            #        (t, robot_list[n], room , speed))
+        ctr = 0
+        while (room.getNumCleanedTiles() / float(room.getNumTiles())) < min_coverage:
+            for robot in robot_list:
+                #print("Trial %02i: Robot %s is cleaning room %s at position %s" %
+                #         (t, robot, room , robot.getRobotPosition()))
+                pct_cleaned = (room.getNumCleanedTiles() / float(room.getNumTiles()) )
+                if pct_cleaned >= min_coverage:
+                    break
+                robot.updatePositionAndClean()
+            #print("%i Robots took %i steps and cleaned %f%% of the floor" % (num_robots, ctr, pct_cleaned*100))
+            ctr += 1
+        trials.append({'steps': ctr, 'pct_cleaned': pct_cleaned})
+
+    total_steps_in_trial = 0
+    for t in range(len(trials)):
+        total_steps_in_trial += trials[t]['steps']
+        #print "trial %i, steps = %s" % (t, trials[t]['steps'])
+    return total_steps_in_trial / float(num_trials)
 
 # Uncomment this line to see how much your simulation takes on average
 ##print  runSimulation(1, 1.0, 10, 10, 0.75, 30, StandardRobot)
+#print  runSimulation(10, 1.0, 15, 20, 0.8, 30, StandardRobot)
+#def runSimulation(num_robots, speed, width, height, min_coverage, num_trials,
+print  runSimulation(1, 2.0, 8, 8, .8, 30, StandardRobot)
+print  runSimulation(2, 2.0, 8, 8, .8, 30, StandardRobot)
 
 
 # === Problem 4
