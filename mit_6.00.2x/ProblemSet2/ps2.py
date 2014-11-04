@@ -302,6 +302,7 @@ def runSimulation(num_robots, speed, width, height, min_coverage, num_trials,
     #print("Looking to clean  %f%% of the floor with %i Robots" % (min_coverage*100, num_robots))
 
     for t in range(num_trials):
+        #anim = ps2_visualize.RobotVisualization(num_robots, width, height)
         room = RectangularRoom(width, height)
 
         robot_list = []
@@ -317,6 +318,7 @@ def runSimulation(num_robots, speed, width, height, min_coverage, num_trials,
                 pct_cleaned = (room.getNumCleanedTiles() / float(room.getNumTiles()) )
                 if pct_cleaned >= min_coverage:
                     break
+                #anim.update(room, robot_list)
                 robot.updatePositionAndClean()
             #print("%i Robots took %i steps and cleaned %f%% of the floor" % (num_robots, ctr, pct_cleaned*100))
             ctr += 1
@@ -326,14 +328,15 @@ def runSimulation(num_robots, speed, width, height, min_coverage, num_trials,
     for t in range(len(trials)):
         total_steps_in_trial += trials[t]['steps']
         #print "trial %i, steps = %s" % (t, trials[t]['steps'])
+    #anim.done()
     return total_steps_in_trial / float(num_trials)
 
 # Uncomment this line to see how much your simulation takes on average
 ##print  runSimulation(1, 1.0, 10, 10, 0.75, 30, StandardRobot)
 #print  runSimulation(10, 1.0, 15, 20, 0.8, 30, StandardRobot)
 #def runSimulation(num_robots, speed, width, height, min_coverage, num_trials,
-print  runSimulation(1, 2.0, 8, 8, .8, 30, StandardRobot)
-print  runSimulation(2, 2.0, 8, 8, .8, 30, StandardRobot)
+print  runSimulation(1, 2.0, 8, 8, .8, 1, StandardRobot)
+print  runSimulation(2, 2.0, 8, 8, .8, 1, StandardRobot)
 
 
 # === Problem 4
@@ -349,8 +352,29 @@ class RandomWalkRobot(Robot):
         Move the robot to a new position and mark the tile it is on as having
         been cleaned.
         """
-        raise NotImplementedError
-
+         
+        random_angle = random.choice(range(360))
+        self.setRobotDirection(random_angle)
+        new_pos = self.getRobotPosition().getNewPosition(
+                            random_angle,
+                            self.getRobotSpeed()
+                      )
+        #print("Direction: %i" % new_pos.getRobotDirection() )
+        while not self.getRobotRoom().isPositionInRoom(new_pos):
+            random_angle = random.choice(range(360))
+            #print("random_angle = %i" % random_angle)
+            self.setRobotDirection(random_angle)
+            new_pos = self.getRobotPosition().getNewPosition(
+                            random_angle,
+                            self.getRobotSpeed()
+                      )
+            #print("angle = %i, pos = %s" % (random_angle, str(new_pos)))
+        self.setRobotPosition(new_pos)
+        room = self.getRobotRoom()
+        room.cleanTileAtPosition(self.pos)
+        
+print  runSimulation(1, 2.0, 8, 8, .8, 1, RandomWalkRobot)
+print  runSimulation(2, 2.0, 8, 8, .8, 1, RandomWalkRobot)
 
 def showPlot1(title, x_label, y_label):
     """
@@ -399,7 +423,7 @@ def showPlot2(title, x_label, y_label):
 # 1) Write a function call to showPlot1 that generates an appropriately-labeled
 #     plot.
 #
-#       (... your call here ...)
+#showPlot1('title here','x label here','y label here')
 #
 
 #
@@ -407,4 +431,5 @@ def showPlot2(title, x_label, y_label):
 #     plot.
 #
 #       (... your call here ...)
+showPlot2('title here','x label here','y label here')
 #
