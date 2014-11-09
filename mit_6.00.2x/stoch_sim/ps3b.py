@@ -86,7 +86,10 @@ class SimpleVirus(object):
         """
 
         #random.seed(0)
-        if random.random() > self.getMaxBirthProb() * (1 - popDensity):
+        r = random.random()
+        w = self.getMaxBirthProb() * (1 - popDensity)
+        if r < w:
+#            print("New virus: %f < %f" % (r,w))
             return SimpleVirus(
                                   self.getMaxBirthProb(),
                                   self.getClearProb()
@@ -157,16 +160,23 @@ class Patient(object):
         integer)
         """
 
+        original_pop_size = self.getTotalPop()
         uncleared_viruses = []
         for v_index in range(self.getTotalPop()):
-            if not self.viruses[v_index]:
+            if not self.viruses[v_index].doesClear():
                 uncleared_viruses.append(self.viruses[v_index])
         self.viruses = uncleared_viruses
+        #print("Cleared %i viruses, from %i down to %i" %
+#            (original_pop_size-len(self.viruses),
+#                     original_pop_size, len(self.viruses)
+#                    )
+#             )
 
-        pop_density = self.getTotalPop() / float(self.getMaxPop())
 
         for v in self.getViruses():
             try:
+                pop_density = self.getTotalPop() / float(self.getMaxPop())
+                #print("pop_density = %02f" % pop_density)
                 self.viruses.append(v.reproduce(pop_density))
             except NoChildException, e:
                 pass
