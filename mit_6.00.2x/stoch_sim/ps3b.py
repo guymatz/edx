@@ -234,20 +234,22 @@ class ResistantVirus(SimpleVirus):
         the probability of the offspring acquiring or losing resistance to a drug.
         """
 
-        # TODO
+        SimpleVirus.__init__(self, maxBirthProb, clearProb)
+        self.resistances = resistances
+        self.mutProb = mutProb
 
 
     def getResistances(self):
         """
         Returns the resistances for this virus.
         """
-        # TODO
+        return self.resistances
 
     def getMutProb(self):
         """
         Returns the mutation probability for this virus.
         """
-        # TODO
+        return self.mutProb
 
     def isResistantTo(self, drug):
         """
@@ -261,7 +263,7 @@ class ResistantVirus(SimpleVirus):
         otherwise.
         """
         
-        # TODO
+        return drug in self.resistances
 
 
     def reproduce(self, popDensity, activeDrugs):
@@ -309,9 +311,16 @@ class ResistantVirus(SimpleVirus):
         NoChildException if this virus particle does not reproduce.
         """
 
-        # TODO
+        for drug in activeDrugs:
+            if not self.isResistantTo(drug):
+                return
 
-            
+        if random.random < self.maxBirthProb * (1 - popDensity)
+            new_resistances = [ x for x in self.resistances if x.values()[0] < (1-mutProb) ]
+            new_resistances = [ x for x in new_resistances if x.values()[0] < mutProb ]
+            return type(self).new(self.maxBirthProb, self.clearProb,
+                                  new_resistances, self.mutProb)
+
 
 class TreatedPatient(Patient):
     """
