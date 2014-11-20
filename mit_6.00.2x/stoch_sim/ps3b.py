@@ -280,7 +280,8 @@ class ResistantVirus(SimpleVirus):
         """
         Returns the resistances for this virus.
         """
-        return self.resistances
+        viruses = self.resistances
+        return { k:viruses[k] for k in viruses.keys() if viruses[k] }
 
     def getMutProb(self):
         """
@@ -300,7 +301,7 @@ class ResistantVirus(SimpleVirus):
         otherwise.
         """
         
-        return drug in self.resistances
+        return drug in self.resistances and self.resistances[drug] == True
 
 
     def reproduce(self, popDensity, activeDrugs):
@@ -348,15 +349,36 @@ class ResistantVirus(SimpleVirus):
         NoChildException if this virus particle does not reproduce.
         """
 
+        # If the virus is not resistant, then it can't reproduce
         for drug in activeDrugs:
             if not self.isResistantTo(drug):
                 return
 
-        if random.random < self.maxBirthProb * (1 - popDensity)
-            new_resistances = [ x for x in self.resistances if x.values()[0] < (1-mutProb) ]
-            new_resistances = [ x for x in new_resistances if x.values()[0] < mutProb ]
-            return type(self).new(self.maxBirthProb, self.clearProb,
-                                  new_resistances, self.mutProb)
+        new_resistances = {}
+        # reproduction chance based on density, etc.
+        r = random.random()
+        print("random num = %f" % r)
+        if r < self.maxBirthProb * (1 - popDensity):
+            print("Reproducing . . ")
+            for drug,resistant in self.resistances.iteritems():
+                if resistant:
+                    print("Resistant drug %s . . " % drug)
+                    if random.random() > (1-self.mutProb):
+                        new_resistances[drug] = False
+                        print(". . . is no longer resistant")
+                    else:
+                        print(". . . is STILL resistant")
+                        new_resistances[drug] = True
+                else:
+                    print("NON-Resistant drug %s . . " % drug)
+                    if random.random() > self.mutProb:
+                        print(". . . is NOW resistant")
+                        new_resistances[drug] = False
+                    else:
+                        print(". . . is still NON-resistant")
+                        new_resistances[drug] = True
+        print("new_resistances : %s" % new_resistances)
+        return type(self)(self.maxBirthProb, self.clearProb, new_resistances, self.mutProb)
 
 
 class TreatedPatient(Patient):
@@ -377,7 +399,9 @@ class TreatedPatient(Patient):
         maxPop: The  maximum virus population for this patient (an integer)
         """
 
-        # TODO
+        self.viruses = viruses
+        self.maxPop = maxPop
+        self.administered_drugs = []
 
 
     def addPrescription(self, newDrug):
@@ -391,7 +415,8 @@ class TreatedPatient(Patient):
         postcondition: The list of drugs being administered to a patient is updated
         """
 
-        # TODO
+        if newDrug not in self.administered_drugs:
+            self.administered_drugs.append(newDrug)
 
 
     def getPrescriptions(self):
@@ -402,7 +427,7 @@ class TreatedPatient(Patient):
         patient.
         """
 
-        # TODO
+        
 
 
     def getResistPop(self, drugResist):
