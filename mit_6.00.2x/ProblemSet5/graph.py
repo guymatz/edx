@@ -65,6 +65,52 @@ class Digraph(object):
     def __str__(self):
         res = ''
         for k in self.edges:
-            for d in self.edges[str(k)]:
+            #for d in self.edges[str(k)]:
+            for d in self.edges[k]:
                 res = '{0}{1}->{2}\n'.format(res, k, d)
+        return res[:-1]
+
+class WeightedEdge(Edge):
+    def __init__(self, src, dest, total_distance, outdoor_distance):
+        Edge.__init__(self, src, dest)
+        self.total_distance = total_distance 
+        self.outdoor_distance = outdoor_distance
+
+    def getTotalDistance(self):
+        return self.total_distance
+
+    def getOutdoorDistance(self):
+        return self.outdoor_distance
+
+    def __str__(self):
+        return '{0}->{1} ({2}, {3})'.format(self.src,
+                self.dest, self.total_distance,
+                self.outdoor_distance)
+
+class WeightedDigraph(Digraph):
+    def __init__(self):
+        Digraph.__init__(self)
+
+    def addEdge(self, edge):
+        src = edge.getSource()
+        dest = edge.getDestination()
+        tot_dist = edge.getTotalDistance()
+        out_dist = edge.getOutdoorDistance()
+        if not(src in self.nodes and dest in self.nodes):
+            raise ValueError('Node not in graph')
+        self.edges[src].append((dest, tot_dist, out_dist))
+
+    def childrenOf(self, node):
+        children = []
+        for child, dist, out_dist in  self.edges[node]:
+            children.append(child)
+        return children
+
+    def __str__(self):
+        res = ''
+        for src in self.edges:
+            for dest, tot_dist, out_dist in self.edges[src]:
+                res = '{0}{1}->{2} ({3:.1f}, {4:.1f})\n'.format(
+                        res, src, dest, tot_dist, out_dist
+                    )
         return res[:-1]
