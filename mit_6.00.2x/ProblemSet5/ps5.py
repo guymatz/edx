@@ -7,15 +7,12 @@ import string
 # This imports everything from `graph.py` as if it was defined in this file!
 from graph import * 
 
-#
 # Problem 2: Building up the Campus Map
 #
-# Before you write any code, write a couple of sentences here 
-# describing how you will model this problem as a graph. 
+"""
+buildings anre nodes, paths are edges.
 
-# This is a helpful exercise to help you organize your
-# thoughts before you tackle a big design problem!
-#
+"""
 
 def load_map(mapFilename):
     """ 
@@ -35,10 +32,37 @@ def load_map(mapFilename):
     Returns:
         a directed graph representing the map
     """
-    # TODO
+    
     print "Loading map from file..."
-        
 
+    g = WeightedDigraph()
+    with open(mapFilename) as file:
+        for line in file:
+            (fro, to, total, outdoors) = tuple(line.split())
+            src = Node(fro)
+            dest = Node(to)
+            total_dist = float(total)
+            out_dist = float(outdoors)
+            edge = WeightedEdge(src, dest, total_dist, out_dist)
+            try:
+                g.addNode(src)
+            except Exception, e:
+                pass
+            try:
+                g.addNode(dest)
+            except Exception, e:
+                pass
+            try:
+                g.addEdge(edge)
+            except Exception, e:
+                pass
+
+    return g
+mitMap = load_map("mit_map.txt")
+print isinstance(mitMap, Digraph)
+print isinstance(mitMap, WeightedDigraph)
+print mitMap.nodes
+print mitMap.edges
 #
 # Problem 3: Finding the Shortest Path using Brute Force Search
 #
