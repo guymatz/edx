@@ -100,9 +100,23 @@ class WeightedDigraph(Digraph):
             raise ValueError('Node not in graph')
         self.edges[src].append([dest, (tot_dist, out_dist)])
 
+    def getEdgeWeights(self, start, end):
+        print("Checking %s and %s" % (start, end))
+        if Node(end) not in self.childrenOf(Node(start)):
+            raise ValueError('End node is not a child of start node')
+        for e in self.edges[Node(start)]:
+            #print e[0], type(e[0])
+            #print end, type(end)
+            if e[0].getName() == end:
+                return e[1]
+
     def childrenOf(self, node):
         children = []
-        for child, dist, out_dist in  self.edges[node]:
+        #print 'Node: ', node
+        #print 'Edges of ', node,  self.edges[node]
+        #for child, dist, out_dist in  self.edges[node]:
+        for edge in  self.edges[node]:
+            child = edge[0]
             children.append(child)
         return children
 
