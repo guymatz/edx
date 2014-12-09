@@ -90,6 +90,7 @@ class WeightedEdge(Edge):
 class WeightedDigraph(Digraph):
     def __init__(self):
         Digraph.__init__(self)
+        self.paths = []
 
     def addEdge(self, edge):
         src = edge.getSource()
@@ -100,21 +101,30 @@ class WeightedDigraph(Digraph):
             raise ValueError('Node not in graph')
         self.edges[src].append([dest, (tot_dist, out_dist)])
 
-    def getEdgeWeights(self, start, end):
-        print("Checking %s and %s" % (start, end))
+    def getEdgeWeight(self, start, end):
+        #print("Checking %s %s" % (start, end))
         if Node(end) not in self.childrenOf(Node(start)):
             raise ValueError('End node is not a child of start node')
         for e in self.edges[Node(start)]:
             #print e[0], type(e[0])
             #print end, type(end)
             if e[0].getName() == end:
-                return e[1]
+                #print 'From ', start, ' ', end, ' is ', e[1]
+                indoor = int(e[1][0])
+                outdoor = int(e[1][1])
+                return indoor, outdoor
+
+    def addPath(self, path):
+        #print 'Adding ', path
+        self.paths.append(path)
+
+    def getPaths(self):
+        #print 'Returning paths'
+        return self.paths
 
     def childrenOf(self, node):
         children = []
-        #print 'Node: ', node
         #print 'Edges of ', node,  self.edges[node]
-        #for child, dist, out_dist in  self.edges[node]:
         for edge in  self.edges[node]:
             child = edge[0]
             children.append(child)
@@ -123,7 +133,12 @@ class WeightedDigraph(Digraph):
     def __str__(self):
         res = ''
         for src in self.edges:
-            for dest, tot_dist, out_dist in self.edges[src]:
+            #for dest, tot_dist, out_dist in self.edges[src]:
+            for e in self.edges[src]:
+                print 'e = ', e
+                dest = e[0]
+                tot_dist = int(e[1][0])
+                out_dist = int(e[1][1])
                 res = '{0}{1}->{2} ({3:.1f}, {4:.1f})\n'.format(
                         res, src, dest, tot_dist, out_dist
                     )
