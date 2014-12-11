@@ -120,7 +120,7 @@ def shortestPath(digraph, paths):
             shortest = p
     return shortest
 
-def totalDists(graph, path):
+def bothDists(graph, path):
     indoor = 0
     outdoor = 0
     for i in range(len(path)-1):
@@ -137,7 +137,7 @@ def shortestTotalPath(digraph, maxDist, maxOutdoorDist, paths):
     for p in paths:
         #print '** Path = ', p, len(p)
         #print '** Paths = ', paths, len(paths)
-        path_dist, path_outdoor_dist = totalDists(digraph,p)
+        path_dist, path_outdoor_dist = bothDists(digraph,p)
         if path_dist > maxDist or path_outdoor_dist > maxOutdoorDist:
             continue
         total_dist = path_dist + path_outdoor_dist
@@ -161,21 +161,31 @@ def DFS(graph, start, end, current_path = [], paths = []):
         else:
             pass
 
-def DFSShortest(graph, start, end, path = [], shortest = None):
-    #assumes graph is a Digraph
-    #assumes start and end are nodes in graph
-    path = path + [start]
-    #print 'Current dfs path:', printPath(path)
-    if Node(start) == Node(end):
-        return path
+def DFSShortest(graph, start, end, current_path = [], maxTotal = 0 , maxOutdoor = 0):
+    #print 'path: ', current_path
+    curr_indoor, curr_outdoor = bothDists(graph, current_path)
+    if (curr_indoor + curr_outdoor) > graph.getShortestPathLength():
+        #print 'returning None'
+        return None
+    if curr_outdoor > maxOutdoor or (curr_indoor + curr_outdoor) > maxTotal:
+        #print 'returning None'
+        return None
+    current_path = current_path + [start]
+    #print 'Current dfs path:', printPath(current_path)
+    if start == end:
+        return current_path
     for node in graph.childrenOf(Node(start)):
-        #print 'Path: ', path
-        if str(node) not in path: #avoid cycles
-            if shortest == None or len(path)<len(shortest):
-                newPath = DFSShortest(graph,str(node),str(end),path,shortest)
-                if newPath != None:
-                    shortest = newPath
-    return shortest
+        if node.getName() not in current_path: #avoid cycles
+            newPath = DFSShortest(graph,node.getName(),end,current_path, maxTotal, maxOutdoor)
+            if newPath != None:
+                #print 'newPath = ', newPath
+                curr_indoor, curr_outdoor = bothDists(graph, newPath)
+                if (curr_indoor + curr_outdoor) < graph.getShortestPathLength():
+                    #print 'newPath = ', newPath, ' with length ', (curr_indoor + curr_outdoor)
+                    graph.setShortestPathLength(curr_indoor + curr_outdoor)
+                graph.addPath(newPath)
+        else:
+            pass
 
 #
 # Problem 4: Finding the Shorest Path using Optimized Search Method
@@ -205,8 +215,17 @@ def directedDFS(digraph, start, end, maxTotalDist, maxDistOutdoors):
         If there exists no path that satisfies maxTotalDist and
         maxDistOutdoors constraints, then raises a ValueError.
     """
-    #TODO
-    pass
+    DFSShortest(digraph, start, end, [], maxTotalDist, maxDistOutdoors)
+    valid_paths = []
+    #print 'All Paths: ', digraph.getPaths()
+    for p in digraph.getPaths():
+        if p[0] == start and p[-1] == end:
+            valid_paths.append(p)
+    #print 'Paths: ', valid_paths
+    # Find appropriate path
+    #return shortestPath(digraph, paths)
+    #return shortestTotalPath(digraph, maxTotalDist, valid_paths)
+    return shortestTotalPath(digraph, maxTotalDist, maxDistOutdoors, valid_paths)
 
 # Uncomment below when ready to test
 #### NOTE! These tests may take a few minutes to run!! ####
@@ -218,12 +237,6 @@ if __name__ == '__main__':
     print 'edges', mitMap.edges
 
     LARGE_DIST = 1000000
-
-    expectedPath1 = ['5', '3', '2']
-    brutePath1 = bruteForceSearch(mitMap, '5', '2', LARGE_DIST, LARGE_DIST)
-#     dfsPath1 = directedDFS(mitMap, '32', '56', LARGE_DIST, LARGE_DIST)
-    print "Expected: ", expectedPath1
-    print "Brute-force: ", brutePath1
 
     #Test cases
     mitMap = load_map("mit_map.txt")
@@ -240,12 +253,12 @@ if __name__ == '__main__':
     print "Test case 1:"
     print "Find the shortest-path from Building 32 to 56"
     expectedPath1 = ['32', '56']
-    brutePath1 = bruteForceSearch(mitMap, '32', '56', LARGE_DIST, LARGE_DIST)
-#     dfsPath1 = directedDFS(mitMap, '32', '56', LARGE_DIST, LARGE_DIST)
     print "Expected: ", expectedPath1
+    brutePath1 = bruteForceSearch(mitMap, '32', '56', LARGE_DIST, LARGE_DIST)
     print "Brute-force: ", brutePath1
-#     print "DFS: ", dfsPath1
-#     print "Correct? BFS: {0}; DFS: {1}".format(expectedPath1 == brutePath1, expectedPath1 == dfsPath1)
+    dfsPath1 = directedDFS(mitMap, '32', '56', LARGE_DIST, LARGE_DIST)
+    print "DFS: ", dfsPath1
+    print "Correct? BFS: {0}; DFS: {1}".format(expectedPath1 == brutePath1, expectedPath1 == dfsPath1)
 
 #     Test case 2
     print "---------------"
@@ -253,18 +266,18 @@ if __name__ == '__main__':
     print "Find the shortest-path from Building 32 to 56 without going outdoors"
     expectedPath2 = ['32', '36', '26', '16', '56']
     brutePath2 = bruteForceSearch(mitMap, '32', '56', LARGE_DIST, 0)
-#     dfsPath2 = directedDFS(mitMap, '32', '56', LARGE_DIST, 0)
+    dfsPath2 = directedDFS(mitMap, '32', '56', LARGE_DIST, 0)
     print "Expected: ", expectedPath2
     print "Brute-force: ", brutePath2
-#     print "DFS: ", dfsPath2
-#     print "Correct? BFS: {0}; DFS: {1}".format(expectedPath2 == brutePath2, expectedPath2 == dfsPath2)
+    print "DFS: ", dfsPath2
+    print "Correct? BFS: {0}; DFS: {1}".format(expectedPath2 == brutePath2, expectedPath2 == dfsPath2)
 
-    test_map = load_map("test_map_1.txt")
-    br3 = bruteForceSearch(test_map, "1", "3", 100, 100)
-    ep3 = ['1', '2', '3']
-    print test_map 
-    print "Expected: ", ep3
-    print "Brute-force: ", br3
+##@#    test_map = load_map("test_map_1.txt")
+##@#    br3 = bruteForceSearch(test_map, "1", "3", 100, 100)
+##@#    ep3 = ['1', '2', '3']
+##@#    print test_map 
+##@#    print "Expected: ", ep3
+##@#    print "Brute-force: ", br3
 
 ##@##     Test case 3
 ##@#    print "---------------"

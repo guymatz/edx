@@ -91,6 +91,13 @@ class WeightedDigraph(Digraph):
     def __init__(self):
         Digraph.__init__(self)
         self.paths = []
+        self.shortest_path_length = (None, None)
+
+    def setShortestPathLength(self, dist):
+        self.shortest_path_length = dist
+
+    def getShortestPathLength(self):
+        return self.shortest_path_length
 
     def addEdge(self, edge):
         src = edge.getSource()
@@ -135,7 +142,7 @@ class WeightedDigraph(Digraph):
         for src in self.edges:
             #for dest, tot_dist, out_dist in self.edges[src]:
             for e in self.edges[src]:
-                print 'e = ', e
+                #print 'e = ', e
                 dest = e[0]
                 tot_dist = int(e[1][0])
                 out_dist = int(e[1][1])
